@@ -4,37 +4,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
-# --- LÓGICA MATEMÁTICA OTIMIZADA (Novos Dados) ---
-
+#matemática
 def calcular_mmq_detalhado():
-    """
-    Realiza o MMQ usando um conjunto de dados clássico da Lei de Moore
-    para que o modelo MMQ (N = alpha * 10^(beta * Ano)) se ajuste
-    mais precisamente à curva exponencial esperada.
-    """
-    # 1. Dados OTIMIZADOS da Lei de Moore (Mais próximos de uma curva perfeita)
-    # A curva MMQ deve se ajustar perfeitamente a estes dados.
+    # 1. Dados OTIMIZADOS da Lei de Moore
     x_ano = np.array([1971, 1974, 1978, 1982, 1985, 1989, 1993, 1997, 2000, 2003, 2006], dtype=np.float64)
     N = np.array([2300, 5000, 29000, 120000, 275000, 1200000, 3100000, 7500000, 42000000, 100000000, 200000000],
                  dtype=np.float64)
     n_pontos = len(x_ano)
 
-    # 2. Linearização e Centralização (Mantida para precisão numérica)
+    # 2. Linearização e Centralização
     y_log = np.log10(N)
 
     x_medio = np.mean(x_ano)
     t = x_ano - x_medio
 
-    # 3. Cálculo dos Somatórios (Usando 't' e 'y')
+    # 3. Cálculo dos Somatórios
     sum_t = np.sum(t)
     sum_t2 = np.sum(t ** 2)
     sum_y = np.sum(y_log)
     sum_ty = np.sum(t * y_log)
 
     # 4. Solução do Sistema Simplificado
-    A_angular = sum_ty / sum_t2  # beta (inclinação)
-    B_t_linear = sum_y / n_pontos  # média(y_log)
+    A_angular = sum_ty / sum_t2
+    B_t_linear = sum_y / n_pontos
 
     # 5. Parâmetros MMQ:
     beta = A_angular
@@ -68,12 +60,9 @@ def calcular_mmq_detalhado():
 
 
 def prever(ano, alpha, beta):
-    """Calcula o valor de N a partir do modelo MMQ."""
     return alpha * (10 ** (beta * ano))
 
-
-# --- INTERFACE GRÁFICA (MooreAppStepByStep - Sem Alterações) ---
-
+#interface
 class MooreAppStepByStep:
     def __init__(self, root):
         self.root = root

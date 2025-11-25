@@ -2,21 +2,14 @@ import tkinter as tk
 from tkinter import messagebox
 import numpy as np
 
+
+#parte matemática do código
 def resolver_gauss_manual(A_in, B_in):
-    """
-    Resolve Ax = B implementando manualmente a Eliminação Gaussiana
-    com Pivoteamento Parcial.
-    """
-    # Trabalhamos com cópias para não alterar os dados originais da interface
     A = np.copy(A_in)
     b = np.copy(B_in)
     n = len(b)
 
-    # --- ETAPA 1: Eliminação Progressiva (Escalonamento) ---
     for k in range(n - 1):
-        # 1.1 Pivoteamento Parcial:
-        # Encontrar a linha com o maior valor absoluto na coluna atual (k)
-        # Isso evita divisão por zero e melhora a precisão.
         indice_max = k
         valor_max = abs(A[k, k])
 
@@ -28,44 +21,33 @@ def resolver_gauss_manual(A_in, B_in):
         if valor_max == 0:
             raise ValueError("O sistema não tem solução única (Matriz Singular).")
 
-        # Trocar as linhas se necessário (tanto na matriz A quanto no vetor b)
         if indice_max != k:
             A[[k, indice_max]] = A[[indice_max, k]]
             b[[k, indice_max]] = b[[indice_max, k]]
 
-        # 1.2 Eliminação (Zerar elementos abaixo do pivô):
         for i in range(k + 1, n):
-            # Fator multiplicador (m)
             fator = A[i, k] / A[k, k]
 
-            # Atualiza a linha i da matriz A: L_i = L_i - fator * L_k
             A[i, k:] = A[i, k:] - fator * A[k, k:]
 
-            # Atualiza o vetor b também
             b[i] = b[i] - fator * b[k]
 
-    # Verificação final para o último elemento da diagonal
     if A[n - 1, n - 1] == 0:
         raise ValueError("O sistema não tem solução única (Matriz Singular).")
 
-    # --- ETAPA 2: Substituição Regressiva (Back-substitution) ---
     x = np.zeros(n)
 
-    # Começa do último índice (n-1) e vai até 0, voltando de 1 em 1
     for i in range(n - 1, -1, -1):
         soma_conhecidos = 0
-        # Soma os termos já encontrados (x[j] onde j > i)
         for j in range(i + 1, n):
             soma_conhecidos += A[i, j] * x[j]
 
-        # Isola o x[i]
         x[i] = (b[i] - soma_conhecidos) / A[i, i]
 
     return x
 
 
-# --- Interface Gráfica (Mantida igual) ---
-
+#parte gráfica
 class AppMinas(tk.Tk):
     def __init__(self):
         super().__init__()
